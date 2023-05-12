@@ -19,11 +19,12 @@
 
 <img align="right" src="./distribution/main_presentation.gif" width="250" height="300"/>
 <div align="left">
-Has it ever happened in your life, that you finally put your legion of desktop icons onto their positions, sorted them by meaning/color, BUT at the next start, Windows treacherously mixed your icons with quantum wind?
+  
+Has it ever happened in your life, that you finally put your legion of desktop icons onto their positions, sorted them by meaning/color, **BUT** at the next start, Windows treacherously mixed your icons with quantum wind?
 
-Has it happened? I have - yes. This was the initial reason for the development.
+It happened to me. This was the initial reason for the development.
 
-`Positioner` - will help not only restore the same layout, but also create several `snapshots` of the desktop with your settings and switch between them.
+`Positioner` - will help not only restore the same layout, but also create several `snapshots` of the desktop, with your settings, and switch between them.
 </div>
 
 
