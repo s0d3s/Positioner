@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "MD_REPORT<<EOF" >> $GITHUB_ENV
           echo "<details><summary>🏗 <b>[${{ matrix.python-arch }}]</b> build info</summary>" >> $GITHUB_ENV
-          echo -e "<br>" >> $GITHUB_ENV
+          echo -e "<br>\n" >> $GITHUB_ENV
           echo -e "- [installer] ${{env.BUILD_NAME}}.exe" >> $GITHUB_ENV
           echo -e "- [portable] ${{env.BUILD_NAME}}.zip\n<hr>" >> $GITHUB_ENV
           echo "</details>" >> $GITHUB_ENV

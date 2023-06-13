@@ -19,11 +19,12 @@
 
 <img align="right" src="./distribution/main_presentation.gif" width="250" height="300"/>
 <div align="left">
-Has it ever happened in your life, that you finally put your legion of desktop icons onto their positions, sorted them by meaning/color, BUT at the next start, Windows treacherously mixed your icons with quantum wind?
+  
+Has it ever happened in your life, that you finally put your legion of desktop icons onto their positions, sorted them by meaning/color, **BUT** at the next start, Windows treacherously mixed your icons with quantum wind?
 
-Has it happened? I have - yes. This was the initial reason for the development.
+It happened to me. This was the initial reason for the development.
 
-`Positioner` - will help not only restore the same layout, but also create several `snapshots` of the desktop with your settings and switch between them.
+`Positioner` - will help not only restore the same layout, but also create several `snapshots` of the desktop, with your settings, and switch between them.
 </div>
 
 
@@ -94,6 +95,6 @@ You can use `Positioner` in two ways:
   
 
 [cat]: https://cataas.com/cat/says/Positioner
-[shield-downloads-count]: https://img.shields.io/github/downloads/s0d3s/Positioner/total
+[shield-downloads-count]: https://img.shields.io/github/downloads/s0d3s/Positioner/total?cacheSeconds=1800
 [shield-windows-only]: https://img.shields.io/badge/-Windows%20only-555?logoWidth=40&logo=windows&logoColor=0078D6
 [shield-download]: https://img.shields.io/badge/%E2%80%8C[Latest]-Download-green?style=for-the-badge&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjxzdmcgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPHBhdGggZD0iTTYgMjFIMThNMTIgM1YxN00xMiAxN0wxNyAxMk0xMiAxN0w3IDEyIiBzdHJva2U9IiM5N2NhMDAiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+DQo8L3N2Zz4=
