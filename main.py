@@ -41,16 +41,20 @@ if __name__ == "__main__":
         try:
             #Added by cx_Freeze
             import BUILD_CONSTANTS
+
             from contextlib import redirect_stdout, redirect_stderr
             from datetime import datetime
 
             SCRIPT_DIR = os.path.dirname(os.path.abspath(sys.executable))
+            LOGS_DIR = os.path.join(SCRIPT_DIR, "logs")
+
+            os.makedirs(LOGS_DIR, exist_ok=True)
 
             # redirect output to file
 
             with open(
                 os.path.join(
-                    SCRIPT_DIR,
+                    LOGS_DIR,
                     f"log_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.txt"
                 ), "a"
             ) as log_f:

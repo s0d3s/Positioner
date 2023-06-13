@@ -32,6 +32,15 @@ SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=admin
 
+[Dirs]
+Name: {app}\configs; Permissions: everyone-modify;
+Name: {app}\logs; Permissions: everyone-modify;
+
+;[Registry]
+;Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; \
+;    ValueType: String; ValueName: "{app}\{#PositionerExeName}"; ValueData: "RUNASADMIN"; \
+;    Flags: uninsdeletekeyifempty uninsdeletevalue; MinVersion: 0,6.1
+
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
