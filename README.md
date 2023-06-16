@@ -4,7 +4,7 @@
 
 ### TOOL FOR SAVING, RESTORING AND MANAGING DESKTOP ICONS
 
-#### ❗ Visit [MASTER](../) branch for more details
+#### ❗ Visit [MASTER](../../) branch for more details
 
 ![shield-downloads-count]
 ![](https://img.shields.io/github/v/release/s0d3s/Positioner?include_prereleases)
