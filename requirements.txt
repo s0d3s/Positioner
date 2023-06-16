@@ -1,2 +1,0 @@
-cx-Freeze
-PySide6>=6.4,<6.5

@@ -1,8 +1,10 @@
 <div align="center">
 
-<img src="./distribution/positioner_top_banner.svg" alt="Positioner header logo" height=300/>
+<img src="./distribution/main/positioner_top_banner.svg" alt="Positioner header logo" height=300/>
 
 ### TOOL FOR SAVING, RESTORING AND MANAGING DESKTOP ICONS
+
+#### ❗ Visit [MASTER](../) branch for more details
 
 ![shield-downloads-count]
 ![](https://img.shields.io/github/v/release/s0d3s/Positioner?include_prereleases)
@@ -17,7 +19,7 @@
 
 ## Why Positioner?
 
-<img align="right" src="./distribution/main_presentation.gif" width="250" height="300"/>
+<img align="right" src="./distribution/main/main_presentation.gif" width="250" height="300"/>
 <div align="left">
   
 Has it ever happened in your life, that you finally put your legion of desktop icons onto their positions, sorted them by meaning/color, **BUT** at the next start, Windows treacherously mixed your icons with quantum wind?
@@ -35,19 +37,19 @@ It happened to me. This was the initial reason for the development.
 
 * Save/restore icons position
 
-  <img height="200" width="500" align="center" src="./distribution/exmp_save_restore.gif"/>
+  <img height="200" width="500" align="center" src="./distribution/main/exmp_save_restore.gif"/>
   
 * Attach `snapshots` to quick slots
 
-  <img height="200" width="500" align="center" src="./distribution/exmp_attach_to_slot.gif"/>
+  <img height="200" width="500" align="center" src="./distribution/main/exmp_attach_to_slot.gif"/>
   
 * Change desktop view(`flags`)
 
-  <img height="200" width="500" align="center" src="./distribution/exmp_desktop_flags.gif"/>
+  <img height="200" width="500" align="center" src="./distribution/main/exmp_desktop_flags.gif"/>
   
 * Quick button for hide\show icons
 
-  <img height="200" width="500" align="center" src="./distribution/exmp_hide_show.gif"/>
+  <img height="200" width="500" align="center" src="./distribution/main/exmp_hide_show.gif"/>
   
 * Restore icons position on OS startup
 
