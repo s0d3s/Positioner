@@ -75,6 +75,42 @@ typedef struct _IconRepr {
     }
 } IconRepresentation;
 
+short escapeWChars(WCHAR* source, CHAR* dest, short maxLength = MAX_PATH)
+{
+    // len(source) <= len(dest) * 4
+    static char const* const charTable = "0123456789abcdef";
+
+    short charStart = 0, i = 0;
+    for (; i < maxLength; i++) {
+        if (source[i] == '\0') break;
+        charStart = i * 4;
+
+        dest[charStart] = charTable[(source[i] >> 12) & 0xF];
+        dest[charStart + 1] = charTable[(source[i] >> 8) & 0xF];
+        dest[charStart + 2] = charTable[(source[i] >> 4) & 0xF];
+        dest[charStart + 3] = charTable[(source[i]) & 0xF];
+    }
+    dest[charStart + 4] = '\0';
+
+    return i + 1;
+}
+
+template<class T, const T delimiter>
+short findDesktopPathPrefixLength(T* itemPath)
+{
+    // C:\Users\UserName\Desktop\ => 4 backslashes
+    
+    for (short i = 0, bs_count = 0; i<MAX_PATH; i++) {
+        if (itemPath[i] == delimiter) {
+            bs_count++;
+            if (bs_count == 4) {
+                return i + 1;
+            }
+        }
+    }
+    
+    return -1;
+}
 
 void PIDLAsHex(ITEMIDLIST* spidl, UINT cb, CHAR* repr)
 {
@@ -1055,11 +1091,14 @@ positioner_c_part_set_icons_data(PyObject* self, PyObject* args, PyObject* kwarg
             currentIconIndex++) {
 
             POINT currentPP;
-            UINT spidl_cb = ILGetSize(spidl);
-            CHAR* idRepr = new CHAR[static_cast<long long>(spidl_cb) * 2 + 1];
+            CHAR* idRepr = new CHAR[MAX_PATH * 4];
+            WCHAR itemPath[MAX_PATH];
+              
+            SHGetPathFromIDListW(spidl, itemPath);
+            short prefixLength = findDesktopPathPrefixLength<wchar_t, L'\\'>(itemPath);
+            escapeWChars(&itemPath[prefixLength], idRepr);
 
             folderView->GetItemPosition(spidl, &currentPP);
-            PIDLAsHex(spidl, spidl_cb, idRepr);
 
             current_icon = PyDict_GetItemString(icons_data, idRepr);
 
@@ -1274,8 +1313,7 @@ positioner_c_part_get_icons_data(PyObject *self, char *Py_UNUSED(ignored))
 
         POINT pt;
         STRRET str;
-        UINT spidl_cb = ILGetSize(spidl);
-        CHAR* idRepr = new CHAR[static_cast<long long>(spidl_cb) * 2 + 1];
+        CHAR itemNameId[MAX_PATH * 4];
         WCHAR itemPath[MAX_PATH];
         CComHeapPtr<WCHAR> spszName;
 
@@ -1283,7 +1321,9 @@ positioner_c_part_get_icons_data(PyObject *self, char *Py_UNUSED(ignored))
         StrRetToStr(&str, spidl, &spszName);
         folderView->GetItemPosition(spidl, &pt);
         SHGetPathFromIDListW(spidl, itemPath);
-        PIDLAsHex(spidl, spidl_cb, idRepr);
+        
+        short prefixLength = findDesktopPathPrefixLength<wchar_t, L'\\'>(itemPath);
+        escapeWChars(&itemPath[prefixLength], itemNameId);
 
         PyObject* current_icon_data = Py_BuildValue("{s:u,s:u,s:O,s:l,s:l}",
                                                     "display_name", spszName,
@@ -1292,11 +1332,9 @@ positioner_c_part_get_icons_data(PyObject *self, char *Py_UNUSED(ignored))
                                                     "x", pt.x,
                                                     "y", pt.y);
 
-        PyDict_SetItemString(icons_data, idRepr, current_icon_data);
+        PyDict_SetItemString(icons_data, itemNameId, current_icon_data);
 
         Py_XDECREF(current_icon_data);
-
-        delete[] idRepr;
     }
 
     return icons_data;
