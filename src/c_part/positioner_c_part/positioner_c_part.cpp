@@ -75,6 +75,25 @@ typedef struct _IconRepr {
     }
 } IconRepresentation;
 
+int escapeWChars(WCHAR* source, CHAR* dest, int maxLength = MAX_PATH)
+{
+    // len(source) <= len(dest) * 4
+    static char const* const charTable = "0123456789abcdef";
+
+    int charStart = 0, i = 0;
+    for (; i < maxLength; i++) {
+        if (source[i] == '\0') break;
+        charStart = i * 4;
+
+        dest[charStart] = charTable[(source[i] >> 12) & 0xF];
+        dest[charStart + 1] = charTable[(source[i] >> 8) & 0xF];
+        dest[charStart + 2] = charTable[(source[i] >> 4) & 0xF];
+        dest[charStart + 3] = charTable[(source[i]) & 0xF];
+    }
+    dest[i * 4] = '\0';
+
+    return i;
+}
 
 void PIDLAsHex(ITEMIDLIST* spidl, UINT cb, CHAR* repr)
 {
@@ -1292,7 +1311,7 @@ positioner_c_part_get_icons_data(PyObject *self, char *Py_UNUSED(ignored))
                                                     "x", pt.x,
                                                     "y", pt.y);
 
-        PyDict_SetItemString(icons_data, idRepr, current_icon_data);
+        PyDict_SetItemString(icons_data, PyUnicode_FromWideChar(itemPath), current_icon_data);
 
         Py_XDECREF(current_icon_data);
 
