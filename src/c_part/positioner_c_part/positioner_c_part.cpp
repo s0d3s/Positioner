@@ -1030,6 +1030,7 @@ positioner_c_part_set_icons_data(PyObject* self, PyObject* args, PyObject* kwarg
 
     IFolderView2* folderView;
     CComPtr<IEnumIDList> spEnum;
+    CComPtr<IShellFolder> spFolder;
     DWORD currentFolderFlags;
     size_t targetIconsCount = PyDict_Size(icons_data);
 
@@ -1059,6 +1060,8 @@ positioner_c_part_set_icons_data(PyObject* self, PyObject* args, PyObject* kwarg
         PY_SET_FOLDER_VIEW_ERROR;
         return NULL;
     }
+  
+    folderView->GetFolder(IID_PPV_ARGS(&spFolder));
 
     if (beforeDesktopFlags != 0 && !(flags & ISF_SKIP_BEFORE_FLAGS)) {
         if (flags & ISF_EXACTLY_BEFORE_FLAGS ? !ExactlySetDesktopFlags(folderView, beforeDesktopFlags)
@@ -1083,6 +1086,10 @@ positioner_c_part_set_icons_data(PyObject* self, PyObject* args, PyObject* kwarg
         PY_SET_ERROR_STR("Error occurred whil executing `handle_init` ", PyExc_RuntimeError);
         errorOccurred = true;
     }
+    
+    WCHAR itemPath[MAX_PATH];
+    STRRET tempStrCont;
+    CComHeapPtr<WCHAR> spszName;
 
     if (!errorOccurred) {
         /* Collect PIDLs of icons */
@@ -1092,12 +1099,19 @@ positioner_c_part_set_icons_data(PyObject* self, PyObject* args, PyObject* kwarg
 
             POINT currentPP;
             CHAR* idRepr = new CHAR[MAX_PATH * 4];
-            WCHAR itemPath[MAX_PATH];
               
             SHGetPathFromIDListW(spidl, itemPath);
-            short prefixLength = findDesktopPathPrefixLength<wchar_t, L'\\'>(itemPath);
-            escapeWChars(&itemPath[prefixLength], idRepr);
-
+            if (itemPath[0] == '\0') {
+                spFolder->GetDisplayNameOf(spidl, SHGDN_NORMAL, &tempStrCont);
+                StrRetToStrW(&tempStrCont, spidl, &spszName);
+                escapeWChars(spszName, idRepr);
+                spszName.Free();
+            }
+            else {
+                short prefixLength = findDesktopPathPrefixLength<wchar_t, L'\\'>(itemPath);
+                escapeWChars(&itemPath[prefixLength], idRepr);
+            }
+            
             folderView->GetItemPosition(spidl, &currentPP);
 
             current_icon = PyDict_GetItemString(icons_data, idRepr);
@@ -1307,34 +1321,43 @@ positioner_c_part_get_icons_data(PyObject *self, char *Py_UNUSED(ignored))
     }
 
     int count = 0;
+    POINT pt;
+    STRRET str;
+    CHAR itemNameId[MAX_PATH * 4];
+    WCHAR itemPath[MAX_PATH];
+    CComHeapPtr<WCHAR> spszName;
+    bool isVirtual;
+  
     for (CComHeapPtr<ITEMID_CHILD> spidl;
         spEnum->Next(1, &spidl, nullptr) == S_OK;
         spidl.Free(), count++) {
-
-        POINT pt;
-        STRRET str;
-        CHAR itemNameId[MAX_PATH * 4];
-        WCHAR itemPath[MAX_PATH];
-        CComHeapPtr<WCHAR> spszName;
 
         spFolder->GetDisplayNameOf(spidl, SHGDN_NORMAL, &str);
         StrRetToStr(&str, spidl, &spszName);
         folderView->GetItemPosition(spidl, &pt);
         SHGetPathFromIDListW(spidl, itemPath);
-        
-        short prefixLength = findDesktopPathPrefixLength<wchar_t, L'\\'>(itemPath);
-        escapeWChars(&itemPath[prefixLength], itemNameId);
+          
+        if (itemPath[0] == '\0') {
+            isVirtual = true;
+            escapeWChars(spszName, itemNameId);
+        }
+        else {
+            isVirtual = false;
+            short prefixLength = findDesktopPathPrefixLength<wchar_t, L'\\'>(itemPath);
+            escapeWChars(&itemPath[prefixLength], itemNameId);
+        }
 
         PyObject* current_icon_data = Py_BuildValue("{s:u,s:u,s:O,s:l,s:l}",
                                                     "display_name", spszName,
                                                     "path", itemPath,
-                                                    "is_virtual", itemPath[0] == '\0' ? Py_True : Py_False,
+                                                    "is_virtual", isVirtual ? Py_True : Py_False,
                                                     "x", pt.x,
                                                     "y", pt.y);
 
         PyDict_SetItemString(icons_data, itemNameId, current_icon_data);
 
         Py_XDECREF(current_icon_data);
+        spszName.Free();
     }
 
     return icons_data;
