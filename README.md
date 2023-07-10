@@ -28,7 +28,15 @@ It happened to me. This was the initial reason for the development.
 </div>
 
 
-## ✨ Features
+<div>
+  <a href="https://medium.com/@s0d3s/how-to-save-the-position-of-icons-on-the-desktop-and-what-is-positioner-app-f564cde01360"> 
+     <img align="right" src="https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white"/>
+  </a>
+  
+  <h2 align="left">
+    ✨ Features
+  </h2>
+</div> 
 
 > ⚠ Positioner is now at the alpha-stage, so exist some nuances.<br>
 > For example, the next few releases will work in single-threaded mode, in order<br>to facilitate testing (that is, when executing a command, the GUI will freeze)
