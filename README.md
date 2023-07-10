@@ -30,7 +30,7 @@ It happened to me. This was the initial reason for the development.
 
 <div>
   <a href="https://medium.com/@s0d3s/how-to-save-the-position-of-icons-on-the-desktop-and-what-is-positioner-app-f564cde01360"> 
-     <img align="right" src="https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white"/>
+     <img align="right" src="https://img.shields.io/badge/Read_on_Medium-12100E?style=for-the-badge&logo=medium&logoColor=white"/>
   </a>
   
   <h2 align="left">
