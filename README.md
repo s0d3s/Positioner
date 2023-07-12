@@ -86,6 +86,7 @@ You can use `Positioner` in two ways:
    > ~~⚠ If installed in Program Files, you will need administrator rights to run `Positioner`~~
 
  - Use `Positioner`!
+   > Optional: Press ⭐ on the github page😉
 
 ### &lt;As Script&gt; Installation
 
