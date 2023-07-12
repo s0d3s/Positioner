@@ -82,7 +82,7 @@ You can use `Positioner` in two ways:
 
  - Download installer from [latest release page](../../releases/latest)
  - Run and install
-   > ⚠ If installed in Program Files, you will need administrator rights to run `Positioner`
+   > ~~⚠ If installed in Program Files, you will need administrator rights to run `Positioner`~~
 
  - Use `Positioner`!
 
