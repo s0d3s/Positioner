@@ -9,8 +9,9 @@
 ![shield-windows-only]
 
 [About](#why-positioner) ● 
-[Features](#-features) ● 
-[Installation](#-installation)
+[Features](#-----features--) ● 
+[Installation](#-installation) ● 
+[Article](https://medium.com/@s0d3s/how-to-save-the-position-of-icons-on-the-desktop-and-what-is-positioner-app-f564cde01360)
   
 [![shield-download]](../../releases/latest)
 </div>
