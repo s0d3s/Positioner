@@ -6,9 +6,11 @@ try:
     #Added by cx_Freeze
     import BUILD_CONSTANTS
     from ..data_manager import DataManager
+    from ..logger import logger
 
 except ImportError:
     from src.data_manager import DataManager
+    from src.logger import logger
 
 # https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/ne-shobjidl_core-folderflags
 FOLDER_FLAGS: Sequence[Dict[str, Any]] = [
@@ -119,5 +121,6 @@ class DesktopFlagsModel(QAbstractListModel):
 
     @Slot(int)
     def toggleFlag(self, flag_index: int):
+        logger.trace("Toggling desktop flag: {}", self.desktop_flags[flag_index]["name"])
         self._data.app_data.switch_desktop_flags(self.desktop_flags[flag_index]["flag"])
         self.desktop_flags[flag_index]["isActive"] = not self.desktop_flags[flag_index]["isActive"]

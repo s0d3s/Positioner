@@ -1,5 +1,6 @@
 .*/
 !.github
+logs/
 __*__
 dev
 configs

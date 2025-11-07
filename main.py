@@ -8,6 +8,7 @@ if __name__ == "__main__":
 
     from src.positioner import run_gui
     from src.qml_connections.utils_model import UtilsModel
+    from src.logger import LogLevel, StreamToLogger, logger
 
     arg_parse = ArgumentParser()
     arg_parse.add_argument("--exit", default=False, action="store_true",
@@ -40,28 +41,20 @@ if __name__ == "__main__":
 
         try:
             #Added by cx_Freeze
-            import BUILD_CONSTANTS
+            # import BUILD_CONSTANTS
 
             from contextlib import redirect_stdout, redirect_stderr
-            from datetime import datetime
 
-            SCRIPT_DIR = os.path.dirname(os.path.abspath(sys.executable))
-            LOGS_DIR = os.path.join(SCRIPT_DIR, "logs")
-
-            os.makedirs(LOGS_DIR, exist_ok=True)
-
-            # redirect output to file
-
-            with open(
-                os.path.join(
-                    LOGS_DIR,
-                    f"log_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.txt"
-                ), "a"
-            ) as log_f:
-                with redirect_stdout(log_f), redirect_stderr(log_f):
-                    run_gui(actions.min)
+            # redirect output to loguru
+            debug_stream = StreamToLogger(LogLevel.DEBUG)
+            error_stream = StreamToLogger(LogLevel.ERROR)
+            
+            with redirect_stdout(debug_stream), redirect_stderr(error_stream):
+                logger.trace("Running GUI in standalone mode")
+                run_gui(actions.min)
 
         except ImportError:
+            logger.trace("Running GUI in source mode")
             run_gui(actions.min)
 
     else:

@@ -14,8 +14,8 @@ Window {
     width: 400
     height: 200    
 
-    x: Screen.width - width - 10
-    y: Screen.desktopAvailableHeight - height - 10
+    x: 0
+    y: 0
 
     flags: Qt.Window | Qt.FramelessWindowHint
 
@@ -100,6 +100,16 @@ Window {
             }
         }
 
+        const currentScreen = mainWindow.screen;
+        const marginX = 10, marginY = 10, emulateTrayHeight = 40;
+        
+        const screenAvailableHeight = currentScreen.height - emulateTrayHeight < currentScreen.desktopAvailableHeight
+            ? currentScreen.height - emulateTrayHeight
+            : currentScreen.desktopAvailableHeight;
+
+        mainWindow.x = currentScreen.width - mainWindow.width - marginX
+        mainWindow.y = screenAvailableHeight - mainWindow.height - marginY
+
         appSettingWindow.x = mainWindow.x - appSettingWindow.width - 10
         appSettingWindow.y = mainWindow.y
 
@@ -108,6 +118,19 @@ Window {
 
         desktopFlagsWindow.x = mainWindow.x - desktopFlagsWindow.width - 10
         desktopFlagsWindow.y = mainWindow.y - mainWindow.height*2 - 10
+        
+        const childWindows = {
+            appSettingWindow,
+            snapshotsSettingWindow,   
+            desktopFlagsWindow,
+            mainWindow
+        };
+        for (var child in childWindows) {
+            const win = childWindows[child];
+            console.log(`'${child}' position: (${win.x}, ${win.y})`);
+        }
+        console.log(`Screen details: name=${currentScreen.name} width=${currentScreen.width}, height=${currentScreen.height}, desktopAvailableWidth=${currentScreen.desktopAvailableWidth}, desktopAvailableHeight=${currentScreen.desktopAvailableHeight}`);
+        
     }
 
     Rectangle {
