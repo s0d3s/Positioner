@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: ['3.9']
+        python-version: ['3.12']
         python-arch: [x64] #, x86]
         
     runs-on: ${{matrix.os}}
