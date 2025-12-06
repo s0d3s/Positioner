@@ -20,7 +20,7 @@ try:
     )
     sys.path.append(RELEASE_SRC_DIR)
     from movement_transitions import collect_available_transitions
-    from logger import logger
+    from src.logger import logger
 
 except ImportError:
     ROOT_DIR = os.path.abspath(

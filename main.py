@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
         try:
             #Added by cx_Freeze
-            # import BUILD_CONSTANTS
+            import BUILD_CONSTANTS
 
             from contextlib import redirect_stdout, redirect_stderr
 
