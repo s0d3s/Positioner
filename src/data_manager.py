@@ -20,6 +20,7 @@ try:
     )
     sys.path.append(RELEASE_SRC_DIR)
     from movement_transitions import collect_available_transitions
+    from logger import logger
 
 except ImportError:
     ROOT_DIR = os.path.abspath(
@@ -32,6 +33,7 @@ except ImportError:
     sys.path.append(BUILD_LIB_DIR)
     DEF_ENTRYPOINT_DIR = os.path.split(SCRIPT_DIR)[0]
     from src.movement_transitions import collect_available_transitions
+    from src.logger import logger
 
 import positioner_c_part as pcp
 
@@ -174,6 +176,8 @@ class AppData(AppDataSettingProperties, AppDataStaticProperties):
                 if exc_hash == snap_hash:
                     self.snapshots_bindings[slot_ind] = snap_ind
                     break
+        
+        logger.trace("Recalculating snapshots bindings. Result: {}", self.snapshots_bindings)
 
     def new_snapshot_unshifted(self) -> None:
         """Increase all `snapshots_bindings`"""
@@ -314,8 +318,10 @@ class DataManager(metaclass=Singleton):
         self._load_snapshots_data()
         self.save_manager_timer: Optional[Thread] = None
         self.save_manager_close_event = Event()
+        logger.trace("DataManager initialized")
 
     def prepare_exit(self):
+        logger.trace("DataManager preparing exit")
         if self.save_manager_timer is not None:
             if self.save_manager_timer.is_alive() and not self.save_manager_close_event.is_set():
                 self.save_manager_close_event.set()
@@ -325,6 +331,7 @@ class DataManager(metaclass=Singleton):
                 self._save_all_data(save_app_data=True, save_snapshots_data=True, immediately=True)
 
     def hide_show_button_clicked(self):
+        logger.trace("DataManager hide_show_button_clicked called")
         restore_snapshot: Optional[SnapshotData]
         hide_snapshot: Optional[SnapshotData]
         restore_snapshot, hide_snapshot = self.app_data.hide_show_button_snapshots()
@@ -391,6 +398,7 @@ class DataManager(metaclass=Singleton):
         return created
 
     def _unshift_new_snapshot(self):
+        logger.trace("DataManager _unshift_new_snapshot called")
         current_time = int(time.time()*1000)
         snapshot_data = SnapshotData(
             snapshot_hash=str(current_time),
@@ -404,6 +412,7 @@ class DataManager(metaclass=Singleton):
         self.trigger_save(save_app_data=False)
 
     def _remove_snapshot(self, snap_ind: int) -> bool:
+        logger.trace("DataManager _remove_snapshot called for snap_ind={}", snap_ind)
         if snap_ind >= len(self.snapshots_data):
             return False
 
@@ -413,12 +422,14 @@ class DataManager(metaclass=Singleton):
         return True
 
     def rename_snapshot(self, snap_ind: int, value: str):
+        logger.trace("DataManager rename_snapshot called for snap_ind={} to value={}", snap_ind, value)
         self.snapshots_data[snap_ind].snapshot_name = value
         self.trigger_save(save_app_data=False)
 
     def activate_snapshot(self, snap_ind: int, *, transition=None,
                           callback_on_start: Callable = lambda: None,
                           callback_on_finish: Callable = lambda: None):
+        logger.trace(f"DataManager activate_snapshot called for snap_ind={snap_ind}")
         if snap_ind < 0 or snap_ind >= len(self.snapshots_data):
             return
 
@@ -446,6 +457,7 @@ class DataManager(metaclass=Singleton):
         self.app_data.recalc_snapshots_bindings(snapshot_hashes)
         self.app_data.recalc_slots_state()
         self.app_data.check_hide_show_button()
+        logger.trace("App Data loaded into DataManager")
 
     def _load_snapshots_data(self):
 
@@ -460,6 +472,7 @@ class DataManager(metaclass=Singleton):
                 self.snapshots_data.append(SnapshotData(**snap_dict))
 
         self._load_app_data(snapshot_hashes)
+        logger.trace("Snapshots Data loaded into DataManager")
 
     def trigger_save(self, save_snapshots_data: bool = True,
                      save_app_data: bool = True,
@@ -500,7 +513,9 @@ class DataManager(metaclass=Singleton):
     def _save_snapshots_data(self):
         with open(self._snapshots_data_file, "w") as f:
             json.dump(self.snapshots_data, f, cls=DataManagerJSONEncoder)
+        logger.trace("Snapshots Data saved")
 
     def _save_app_data(self):
         with open(self._app_config_file, "w") as f:
             json.dump(self.app_data, f, cls=DataManagerJSONEncoder)
+        logger.trace("App Data saved")

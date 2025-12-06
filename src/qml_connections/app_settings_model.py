@@ -9,9 +9,11 @@ try:
     #Added by cx_Freeze
     import BUILD_CONSTANTS
     from ..data_manager import DataManager
+    from ..logger import logger
 
 except ImportError:
     from src.data_manager import DataManager
+    from src.logger import logger
 
 
 def camel_case_to_snake(name: str):
@@ -132,6 +134,7 @@ class AppSettingsModel(QObject):
         self._utils = UtilsModel()
 
     def handle_autorun(self, add: bool = True):
+        logger.trace("Handling autorun. Add: {}", add)
         if add:
             self._utils.addToAutorunWithArguments(start_after_action=self.launchOnSystemStartup,
                                                   minimized=self.startMinimized,

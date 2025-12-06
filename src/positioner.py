@@ -1,5 +1,5 @@
 from PySide6 import Path, QtCore
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QCursor
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtCore import QtMsgType
 
@@ -10,24 +10,25 @@ import sys
 import version
 
 from src.qml_connections import snapshots_list_model, desktop_flags_model, app_settings_model, utils_model
-
+from src.logger import LogLevel, logger
 
 def qt_message_handler(mode, context, message):
-    if mode == QtMsgType.QtInfoMsg:
-        mode = 'Info'
-    elif mode == QtMsgType.QtWarningMsg:
-        mode = 'Warning'
-    elif mode == QtMsgType.QtCriticalMsg:
-        mode = 'critical'
-    elif mode == QtMsgType.QtFatalMsg:
-        mode = 'fatal'
-    else:
-        mode = 'Debug'
+    qt_log_level_map = {
+        QtMsgType.QtDebugMsg: LogLevel.DEBUG,
+        QtMsgType.QtInfoMsg: LogLevel.INFO,
+        QtMsgType.QtWarningMsg: LogLevel.WARNING,
+        QtMsgType.QtCriticalMsg: LogLevel.ERROR,
+        QtMsgType.QtFatalMsg: LogLevel.CRITICAL,
+    }
+    correct_level = qt_log_level_map.get(mode, LogLevel.DEBUG)
 
     def get_right_name_part(path: str) -> str:
         return path.rsplit("/", 1)[-1]
-
-    print("%s: %s (%s:%d)" % (mode, message, get_right_name_part(context.file), context.line))
+    
+    logger.opt(depth=1).log(
+        correct_level,
+        f"{message} ({get_right_name_part(context.file)}:{context.line})"
+    )
 
 
 def run_gui(start_minimized=False):
@@ -64,13 +65,6 @@ def run_gui(start_minimized=False):
     tray.setIcon(app_icon)
     tray.setVisible(True)
 
-    def show_main_window(reason):
-        if tray.ActivationReason.Trigger == reason:
-            setattr(a_s_m, "showMainWindow", False)
-            setattr(a_s_m, "showMainWindow", True)
-
-    tray.activated.connect(show_main_window)
-
     menu = QtWidgets.QMenu()
 
     temp_list = [] # addAction steal ref
@@ -88,7 +82,19 @@ def run_gui(start_minimized=False):
     quit = QAction("Quit")
     quit.triggered.connect(app.quit)
     menu.addAction(quit)
-    tray.setContextMenu(menu)
+    
+    def show_main_window(reason):
+        if reason == tray.ActivationReason.Trigger:
+            setattr(a_s_m, "showMainWindow", False)
+            setattr(a_s_m, "showMainWindow", True)
+        elif reason == tray.ActivationReason.Context:
+            # Right click → show context menu
+            tray_and_menu_height = 145
+            pos = QCursor.pos()
+            pos.setY(pos.y() - tray_and_menu_height)  # slight offset
+            menu.popup(pos)
+
+    tray.activated.connect(show_main_window)
 
     qml_file = ui_dir_path / "App.qml"
     engine.load(qml_file)
@@ -96,7 +102,10 @@ def run_gui(start_minimized=False):
     if not engine.rootObjects():
         sys.exit(-1)
 
+    
+    logger.trace("GUI prepared, entering main loop")
     code = app.exec()
+    logger.trace("Exiting GUI main loop. Code: {}", code)
     utils_m._data_man.prepare_exit()
     sys.exit(code)
 

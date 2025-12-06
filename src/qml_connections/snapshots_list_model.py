@@ -8,9 +8,11 @@ try:
     #Added by cx_Freeze
     import BUILD_CONSTANTS
     from ..data_manager import DataManager
+    from ..logger import logger
 
 except ImportError:
     from src.data_manager import DataManager
+    from src.logger import logger
 
 
 def _set_iats_qml_prop(slot_ind: int) -> Callable:
@@ -163,6 +165,7 @@ class SnapshotsListModel(QAbstractListModel):
 
     @Slot()
     def hideShowButtonClicked(self):
+        logger.trace("Hide/Show button clicked")
         self.enableSlotControls = False
         row_count = self.rowCount()
         if self._data.hide_show_button_clicked():
@@ -187,6 +190,7 @@ class SnapshotsListModel(QAbstractListModel):
 
     @Slot(int)
     def attachSelectedToSlot(self, slot_num):
+        logger.trace("Attaching selected snapshot to slot: {}", slot_num)
         if self._selectedSnapshotIndex < 0:
             return
         self._data.app_data.attach_snap_to_slot(slot_num, self._selectedSnapshotIndex)
@@ -258,6 +262,7 @@ class SnapshotsListModel(QAbstractListModel):
 
     @Slot(int, str)
     def setSnapshotName(self, index: int, value: str):
+        logger.trace("Setting snapshot #{} name to: {}", index, value)
         self._data.rename_snapshot(index, value)
 
     @Slot(result=bool)

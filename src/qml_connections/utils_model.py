@@ -9,10 +9,12 @@ try:
     #Added by cx_Freeze
     import BUILD_CONSTANTS
     from ..data_manager import DataManager
+    from ..logger import logger
     DEF_ENTRYPOINT_PATH = sys.executable
 
 except ImportError:
     from src.data_manager import DataManager
+    from src.logger import logger
     DEF_ENTRYPOINT_PATH = f'{sys.executable}" "{os.path.abspath(main.__file__)}'
 
 DEF_AUTORUN_KEY_NAME = version.exe_target_name
